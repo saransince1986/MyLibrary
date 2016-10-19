@@ -1,0 +1,157 @@
+<html>
+    <head>
+        <title>HTML5 Drag & Drop</title>
+        <style>
+            .leftTable{
+                position: absolute;
+                left: 30px;
+                top: 50px;
+                width: 200px;
+                z-index: 1;
+            }
+            .rightTable{
+                position: absolute;
+                left: 350px;
+                top: 50px;
+                width: 300px;
+                z-index: 0;
+            }
+            
+            .draggable{
+                min-height: 20px;
+                min-width: 100px;
+            }
+            .droppable{
+                min-height: 20px;
+                min-width: 100px;
+                width: 100%;
+                height: 100%;
+            }
+            table {
+                border-collapse: collapse;
+            }
+            table th, table td{
+                border: 1px solid #000;
+                min-height: 20px;
+                min-width: 100px;
+             }
+             table .spacer{
+                max-width: 1px !important;
+                padding: 0px !important;
+             }
+             
+        </style>
+        <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+  <script>
+  $( function() {
+    //$(".draggable").css({width:$(".draggable").parent().width()+'px',height:$(".draggable").parent().height()+'px'});
+    $(".draggable").each(function(){
+        $(this).data('origLeft', $(this).offset().left);
+        $(this).data('origTop', $(this).offset().top);
+    });
+    
+    $( ".draggable" ).draggable({
+        revert : function(event, ui) {
+            if(!event)
+            {
+                $('.droppable[data-item='+$(this).attr('droppedOn')+']').height(0).width(0);
+                $(this).removeAttr('droppedOn');
+            
+                $('.draggable[droppedOn]').each(function (){
+                    $(this).css({'left':($('.droppable[data-item='+$(this).attr('droppedOn')+']').offset().left-$(this).data('origLeft')+5)+'px','top':($('.droppable[data-item='+$(this).attr('droppedOn')+']').offset().top-$(this).data('origTop')+5)+'px'});
+                });
+            }
+            
+            
+            $(this).data("uiDraggable").originalPosition = {
+                top : 0,
+                left : 0
+            };
+            return !event;
+        }
+    });
+    $( ".droppable" ).droppable({
+        tolerance: "pointer",
+      drop: function( event, ui ) {
+        $(this).height(ui.draggable.height()+10).width(ui.draggable.width()+10);
+        ui.draggable.css({'left':($(this).offset().left-ui.draggable.data('origLeft')+5)+'px','top':($(this).offset().top-ui.draggable.data('origTop')+5)+'px'});
+        ui.draggable.attr('droppedOn',$(this).data('item'));
+        //$(".droppable").each(function(){
+        //    $(this).css({width:$(this).parent().width()+'px',height:$(this).parent().height()+'px'});
+        //});
+      }
+    });
+  } );
+  </script>
+    </head>
+    <body>
+        <div class="leftTable">
+        <table>
+            <tr>
+                <th>A</th>
+                <th>B</th>
+            </tr>
+            <tr>
+                <td>
+                    <div class="draggable" data-item="1"><div class="item">one one one one one one one one one one one one one one one one one one one one one one one one one one one one one</div></div>
+                </td>
+                <td>
+                    <div class="draggable" data-item="2"><div class="item">two</div></div>
+                </td>
+            </tr>
+        </table>
+        </div>
+        <div class="rightTable">
+        <table>
+            <tr>
+                <th></th>
+                <th colspan="2" class="right">Option 1</th>
+                <th class="spacer"></th>
+                <th colspan="2" class="left">Option 2</th>
+            </tr>
+            <tr>
+                <td></td>
+                <td>A</td>
+                <td>B</td>
+                <td class="spacer"></td>
+                <td>A</td>
+                <td>B</td>
+            </tr>
+            <tr>
+                <td>1</td>
+                <td>
+                    <div class="droppable" data-item="1"></div>
+                </td>
+                <td>
+                    <div class="droppable" data-item="2"></div>
+                </td>
+                <td class="spacer"></td>
+                <td>
+                    <div class="droppable" data-item="3"></div>
+                </td>
+                <td>
+                    <div class="droppable" data-item="4"></div>
+                </td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>
+                    <div class="droppable" data-item="5"></div>
+                </td>
+                <td>
+                    <div class="droppable" data-item="6"></div>
+                </td>
+                <td class="spacer"></td>
+                <td>
+                    <div class="droppable" data-item="7"></div>
+                </td>
+                <td>
+                    <div class="droppable" data-item="8"></div>
+                </td>
+            </tr>
+        </table>
+        </div>
+        
+    </body>
+</html>
